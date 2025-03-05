@@ -25,8 +25,8 @@ dropoutProb1 = 0.2
 dropoutProb2 = 0.3
 dropoutProb3 = 0.4
 dropoutProb4 = 0.5
-
-
+batchSize = 100
+nEpoch = 30
 
 
 
@@ -61,5 +61,12 @@ CnnModel.compile(optimizer='adam',
                   metrics=['accuracy'])
 
 
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+# this is the callback for the early stopping regularization meathod.
 
-CnnModel.fit(X_train , y_train , epochs= 10)
+
+SaveHistory=CnnModel.fit(X_train , y_train , 
+                        epochs= nEpoch,
+                        validation_data=(X_test,y_test),
+                        batch_size= batchSize,
+                        callbacks=[early_stopping])
