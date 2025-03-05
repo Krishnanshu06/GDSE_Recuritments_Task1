@@ -29,7 +29,7 @@ dropoutProb1 = 0.2
 dropoutProb2 = 0.3
 dropoutProb3 = 0.4
 dropoutProb4 = 0.5
-batchSize = 100
+batchSize = 64
 nEpoch = 30
 
 #############################################################################################################################
@@ -55,6 +55,8 @@ CnnModel = models.Sequential([
                 layers.Flatten(),
                 layers.Dense(256 , activation='relu'),
                 layers.Dropout(dropoutProb4),
+                layers.Dense(256 , activation='relu'),
+                layers.Dropout(dropoutProb4),
                 layers.Dense(10 , activation= 'softmax')
 
                 ])
@@ -65,15 +67,17 @@ CnnModel.compile(optimizer='adam',
                   metrics=['accuracy'])
 
 
-early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 # this is the callback for the early stopping regularization meathod.
+lr_scheduler = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', patience=3, factor=0.5, verbose=1)
+
 
 
 SaveHistory=CnnModel.fit(X_train , y_train , 
                         epochs= nEpoch,
                         validation_data=(X_test,y_test),
                         batch_size= batchSize,
-                        callbacks=[early_stopping])
+                        callbacks=[early_stopping,lr_scheduler])
 
 
 #############################################################################################################################
@@ -111,3 +115,5 @@ plt.title('Model Loss')
 plt.show()
 
 
+# even after i tune the hyperparameters, The maximum validation accuracy is about 75%.
+# for further improvements we will use a pre trianed model and build our model on it.
