@@ -17,11 +17,19 @@ X_test = X_test / 255        #normalizing the data to be btw 0 and 1
 
 
 #############################################################################################################################
+# Importing VGG16
+
+VGG_layers = tf.keras.applications.VGG16(weights = 'imagenet',
+                                         include_top = False,   
+                                         input_shape = (32,32,3))
+
+VGG_layers.trainable = False   # make the Conv layers untrainable
+
+
+#############################################################################################################################
 # Hyperparameters
 
-dropoutProb1 = 0.1
-dropoutProb2 = 0.2
-dropoutProb3 = 0.3
+
 dropoutProb4 = 0.4
 batchSize = 100
 nEpoch = 30
@@ -34,31 +42,13 @@ InitLR = 0.0005
 
 CnnModel = models.Sequential([
 
-                layers.Conv2D(filters=32 , kernel_size =(3,3) , activation= 'relu' , input_shape= X_train[0].shape),
-                layers.BatchNormalization(),
-                layers.MaxPooling2D((2,2)),
-                layers.Dropout(dropoutProb1),
-
-                layers.Conv2D(filters=64 , kernel_size= (3,3) , activation='relu'),
-                layers.BatchNormalization(),
-                layers.MaxPooling2D((2,2)),
-                layers.Dropout(dropoutProb2),
-
-                layers.Conv2D(filters=128 , kernel_size= (3,3) , activation='relu'),
-                layers.BatchNormalization(),
-                layers.Dropout(dropoutProb3),
-
-                layers.Conv2D(filters=256 , kernel_size=(3,3), activation='relu'),
-                layers.BatchNormalization(),
-                layers.MaxPooling2D((2,2)),
-                layers.Dropout(dropoutProb4),
-
+                VGG_layers,
                 layers.Flatten(),
-                layers.Dense(256 , activation='relu'),
+                layers.Dense(512, activation='relu'),
                 layers.Dropout(dropoutProb4),
-                layers.Dense(256 , activation='relu'),
+                layers.Dense(256, activation='relu'),
                 layers.Dropout(dropoutProb4),
-                layers.Dense(10 , activation= 'softmax')
+                layers.Dense(10, activation='softmax')
 
                 ])
 
@@ -74,6 +64,10 @@ early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=8
 # this is the callback for the early stopping regularization meathod.
 lr_scheduler = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', patience=3, factor=0.5, verbose=1)
 # reducing lr when the loss is stagnent to converge faster.
+
+
+#############################################################################################################################
+#Training
 
 
 SaveHistory=CnnModel.fit(X_train , y_train , 
