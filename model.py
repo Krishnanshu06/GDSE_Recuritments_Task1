@@ -15,10 +15,12 @@ y_train = y_train.reshape(-1,) #making it a 1d array
 # print(y_train[:5])
 
 
+
+
 X_train = X_train / 255
 X_test = X_test / 255        #normalizing the data to be btw 0 and 1
 
-print(X_train[0])
+# print(X_train[0])
 
 
 dropoutProb1 = 0.2
@@ -70,3 +72,13 @@ SaveHistory=CnnModel.fit(X_train , y_train ,
                         validation_data=(X_test,y_test),
                         batch_size= batchSize,
                         callbacks=[early_stopping])
+
+predictions = np.argmax(CnnModel.predict(X_test) , axis=1)
+true = y_test.reshape(-1,)
+
+from sklearn.metrics import classification_report
+
+print(classification_report(true , predictions, target_names= outputClasses))
+
+
+
