@@ -53,7 +53,7 @@ CnnModel = models.Sequential([
 
                 VGG_layers,
                 layers.Flatten(),
-                
+
                 layers.Dense(512, activation='relu'),
                 layers.Dropout(dropoutProb4),
                 layers.Dense(256, activation='relu'),
@@ -101,8 +101,6 @@ print(classification_report(true , predictions, target_names= outputClasses))
 #############################################################################################################################
 #plotting acc and loss per epoch
 
-import matplotlib
-matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(12, 5))
