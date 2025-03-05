@@ -35,7 +35,7 @@ for layer in VGG_layers.layers[-4:]:
 
 dropoutProb4 = 0.4
 batchSize = 100
-nEpoch = 30
+nEpoch = 3
 InitLR = 0.0005
 
 
@@ -45,8 +45,15 @@ InitLR = 0.0005
 
 CnnModel = models.Sequential([
 
+            
+                layers.RandomFlip("horizontal"),  
+                layers.RandomRotation(0.1),
+                layers.RandomZoom(0.1), 
+                layers.RandomContrast(0.1),  
+
                 VGG_layers,
                 layers.Flatten(),
+                
                 layers.Dense(512, activation='relu'),
                 layers.Dropout(dropoutProb4),
                 layers.Dense(256, activation='relu'),
@@ -94,6 +101,8 @@ print(classification_report(true , predictions, target_names= outputClasses))
 #############################################################################################################################
 #plotting acc and loss per epoch
 
+import matplotlib
+matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(12, 5))
@@ -113,7 +122,3 @@ plt.legend()
 plt.title('Model Loss')
 
 plt.show()
-
-
-# even after i tune the hyperparameters, The maximum validation accuracy is about 78%.
-# for further improvements we will use a pre trianed model and build our model on it.

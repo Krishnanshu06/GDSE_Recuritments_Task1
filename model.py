@@ -24,7 +24,7 @@ dropoutProb2 = 0.2
 dropoutProb3 = 0.3
 dropoutProb4 = 0.4
 batchSize = 100
-nEpoch = 30
+nEpoch = 3
 InitLR = 0.0005
 
 
@@ -33,6 +33,13 @@ InitLR = 0.0005
 #Model
 
 CnnModel = models.Sequential([
+
+
+                layers.RandomFlip("horizontal"),  
+                layers.RandomRotation(0.1),
+                layers.RandomZoom(0.1), 
+                layers.RandomContrast(0.1),  
+
 
                 layers.Conv2D(filters=32 , kernel_size =(3,3) , activation= 'relu' , input_shape= X_train[0].shape),
                 layers.BatchNormalization(),
