@@ -25,6 +25,9 @@ VGG_layers = tf.keras.applications.VGG16(weights = 'imagenet',
 
 VGG_layers.trainable = False   # make the Conv layers untrainable
 
+for layer in VGG_layers.layers[-4:]:
+    layer.trainable = True
+
 
 #############################################################################################################################
 # Hyperparameters
